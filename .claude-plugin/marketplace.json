@@ -1,0 +1,13 @@
+{
+  "name": "what-what-what",
+  "description": "One mod: what-what-what, three lines above the Claude Code prompt saying what Claude is doing, why, and what it needs from you.",
+  "owner": {
+    "name": "Nick Holden"
+  },
+  "plugins": [
+    {
+      "name": "what-what-what",
+      "source": "./"
+    }
+  ]
+}
