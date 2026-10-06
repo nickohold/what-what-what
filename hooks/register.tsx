@@ -5,26 +5,23 @@ import { FOOTER_INSTRUCTION, KEYS, parseFooter, stripFooter } from './footer'
 
 const footer = atom({ plugin: 'what-what-what', key: 'footer' } as const, null)
 
-/** The system prompt section that asks for the footer; the id other hooks find it by. */
-const INSTRUCTION_SECTION = {
-  id: 'what-what-what:footer',
-  text: FOOTER_INSTRUCTION,
-  scope: 'session',
-} as const
-
 export const register: Register = on => {
   // Without this the band depends on each session being told separately to
-  // write the three lines. Only where a band can be drawn: a session with no
-  // surface (`claude -p`, the SDK) has none, and a teammate's reply goes to its
-  // lead, so neither is asked to end its output with lines nobody would see.
-  on('prompt.compose', async ($, e, next) => {
-    const composed = await next(e)
+  // write the three lines. The instruction rides beside every prompt, unseen by
+  // the person, and not in the system prompt: in a long conversation whose
+  // earlier replies have no footer, Claude keeps to that pattern and passes over
+  // a system prompt section (seen 2026-10-06 on a session that loaded the mod
+  // mid-conversation), while an instruction next to the prompt is followed.
+  // Only where a band can be drawn: a session with no surface (`claude -p`, the
+  // SDK) is not asked to end its output with lines nobody would see.
+  on('prompt.submit', async ($, e, next) => {
+    const surfaces = await $.session.surfaces()
 
-    if (e.surfaces.length === 0 || e.traits.includes('teammate')) {
-      return composed
+    if (surfaces.length === 0) {
+      return next(e)
     }
 
-    return { sections: [...composed.sections, INSTRUCTION_SECTION] }
+    return next({ ...e, context: [...(e.context ?? []), FOOTER_INSTRUCTION] })
   })
 
   // Claude ends each message with the three lines; the band keeps the latest

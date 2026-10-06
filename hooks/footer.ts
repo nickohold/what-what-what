@@ -8,12 +8,13 @@ export const KEYS = {
 } as const
 
 /**
- * What tells Claude to write the footer, sent in the system prompt of every
- * session the mod draws in: the band shows only what Claude writes, so a
- * session that is never told shows nothing. The labels come from KEYS, the
- * same ones parseFooter matches, so what is asked for is what is read.
+ * What tells Claude to write the footer, sent beside every prompt of a session
+ * the mod draws in: the band shows only what Claude writes, so a session that
+ * is never told shows nothing. The labels come from KEYS, the same ones
+ * parseFooter matches, so what is asked for is what is read.
  */
 export const FOOTER_INSTRUCTION = [
+  'Standing instruction from the what-what-what mod, sent with every prompt and not written by the person. It applies to this reply even if your earlier replies in this conversation did not follow it.',
   'End every message you write to the person with these three lines, as the very last lines of the message, each on its own line:',
   '',
   `${KEYS.doing}: <the step in progress right now, or "nothing" when you are idle or waiting>`,

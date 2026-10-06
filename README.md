@@ -24,7 +24,7 @@ Works in Claude Code in the terminal and in the desktop app's Code tab.
 
 ## How it behaves
 
-- **Claude is told to write the three lines.** The mod adds a short instruction to the system prompt of every session that has a screen. Nothing needs to go in your `CLAUDE.md`.
+- **Claude is told to write the three lines.** The mod sends a short instruction alongside every prompt, where you never see it, in every session that has a screen. Nothing needs to go in your `CLAUDE.md`. It rides with each prompt because a session that is already deep into a conversation ignores the same instruction when it only sits in the system prompt.
 - **The band shows the latest three lines** and updates after every reply. A reply without all three lines leaves the previous ones standing.
 - **The transcript hides them.** Only the drawing changes; the stored message still has them.
 - **Headless runs are left alone.** `claude -p` and SDK sessions have no band, so they are not asked to add the lines to their output. Subagent replies are ignored.

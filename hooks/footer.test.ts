@@ -66,34 +66,31 @@ test('a footer written the way the instruction shows it is read', () => {
   })
 })
 
-const ENGINE_SECTIONS = [{ id: 'intro', text: 'You are Claude Code.', scope: 'shared' }] as const
+/** A prompt as the person typed it at the terminal, with nothing attached yet. */
+const TYPED = { text: 'is the deploy done?', wait: false, origin: { kind: 'composer' } } as const
 
-const COMPOSE = {
-  model: 'claude-opus-5-5',
-  promptModel: 'claude-opus-5-5',
-  tools: [],
-  outputStyle: null,
-} as const
+for (const surface of ['terminal', 'desktop'] as const) {
+  test(`a session drawing on ${surface} gets the instruction beside the prompt, the prompt itself untouched`, async ($, on) => {
+    on('prompt.submit', (_$, e) => ({ text: e.text, context: e.context }))
+    on('session.surfaces', () => ({ value: [surface] }))
 
-test("a session that draws is told to write the footer, after the engine's own sections", async ($, on) => {
-  on('prompt.compose', () => ({ sections: ENGINE_SECTIONS }))
+    expect(await $.prompt.submit(TYPED)).toEqual({ text: TYPED.text, context: [FOOTER_INSTRUCTION] })
+  })
+}
 
-  for (const surface of ['terminal', 'desktop'] as const) {
-    const { sections } = await $.prompt.compose({ ...COMPOSE, surfaces: [surface], traits: [] })
+test('what another hook attached to the prompt is kept, the instruction after it', async ($, on) => {
+  on('prompt.submit', (_$, e) => ({ text: e.text, context: e.context }))
+  on('session.surfaces', () => ({ value: ['terminal'] as const }))
 
-    expect(sections).toEqual([
-      ...ENGINE_SECTIONS,
-      { id: 'what-what-what:footer', text: FOOTER_INSTRUCTION, scope: 'session' },
-    ])
-  }
+  expect(await $.prompt.submit({ ...TYPED, context: ['a note'] })).toEqual({
+    text: TYPED.text,
+    context: ['a note', FOOTER_INSTRUCTION],
+  })
 })
 
-test('a session with nothing to draw on, and a teammate, are not told', async ($, on) => {
-  on('prompt.compose', () => ({ sections: ENGINE_SECTIONS }))
+test('a session with nothing to draw on is not told', async ($, on) => {
+  on('prompt.submit', (_$, e) => ({ text: e.text, context: e.context }))
+  on('session.surfaces', () => ({ value: [] }))
 
-  const headless = await $.prompt.compose({ ...COMPOSE, surfaces: [], traits: ['print'] })
-  const teammate = await $.prompt.compose({ ...COMPOSE, surfaces: ['terminal'], traits: ['teammate'] })
-
-  expect(headless.sections).toEqual(ENGINE_SECTIONS)
-  expect(teammate.sections).toEqual(ENGINE_SECTIONS)
+  expect(await $.prompt.submit(TYPED)).toEqual({ text: TYPED.text, context: undefined })
 })
