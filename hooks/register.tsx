@@ -52,18 +52,27 @@ export const register: Register = on => {
 
     const { Box, Text } = $.ui.resolve(e)
 
+    // Each line in its own box, the border in its label's colour. A border
+    // takes a whole row, so stacked boxes would show two border rows between
+    // lines; each box after the first rises one row and draws its top border
+    // over the bottom border of the box above.
     return (
       <Box flexDirection="column">
-        <Text>
-          <Text bold color="claude">{KEYS.doing}:</Text> {lines.doing}
-        </Text>
-        <Text>
-          <Text bold color="suggestion">{KEYS.goal}:</Text> {lines.goal}
-        </Text>
-        <Text>
-          <Text bold color="warning">{KEYS.needed}:</Text> {lines.needed}
-        </Text>
+        {BOXES.map(({ key, color }, i) => (
+          <Box borderStyle="round" borderColor={color} paddingX={1} marginTop={i === 0 ? 0 : -1}>
+            <Text>
+              <Text bold color={color}>{KEYS[key]}:</Text> {lines[key]}
+            </Text>
+          </Box>
+        ))}
       </Box>
     )
   })
 }
+
+/** The band's boxes in the order shown: which footer line each holds, in what colour. */
+const BOXES = [
+  { key: 'doing', color: 'claude' },
+  { key: 'goal', color: 'suggestion' },
+  { key: 'needed', color: 'warning' },
+] as const satisfies readonly { key: keyof typeof KEYS; color: string }[]

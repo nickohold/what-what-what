@@ -1,6 +1,6 @@
 {
   "name": "what-what-what",
-  "version": "0.1.1",
+  "version": "0.1.4",
   "description": "Keeps three lines in a band above the prompt: what Claude is doing right now, for what higher goal, and what it needs from you.",
   "author": { "name": "Nick Holden" },
   "license": "MIT",

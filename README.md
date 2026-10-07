@@ -8,7 +8,7 @@ for what higher goal: the search page shipped and checked on staging.
 what is needed from you: nothing.
 ```
 
-During long work it is easy to lose track of what Claude is doing, why, and whether it is waiting on you. This mod makes Claude end every reply with those three answers and pins the latest ones in a coloured band above the prompt. The lines are hidden from the transcript, so they are not repeated under every reply.
+During long work it is easy to lose track of what Claude is doing, why, and whether it is waiting on you. This mod makes Claude end every reply with those three answers and pins the latest ones above the prompt, each line in its own coloured box. The lines are hidden from the transcript, so they are not repeated under every reply.
 
 ## Install
 
